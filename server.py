@@ -5,13 +5,13 @@ from flask import Flask, jsonify, request, render_template
 from database import schema, init_db, Card
 from metabase import Metabase
 
-app = Flask(__name__)
+WEB_PATH = os.getenv('WEB_PATH', '/')
 
+app = Flask(__name__, static_url_path=WEB_PATH+'static')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = init_db(app)
 
-WEB_PATH = os.getenv('WEB_PATH', '/')
 METABASE_URL = os.getenv('METABASE_URL')
 METABASE_DATABASE_ID = int(os.getenv('METABASE_DATABASE_ID', -1))
 
@@ -42,19 +42,19 @@ def mb():
 
     raise Exception("Missing Metabase session/login info.")
 
-@app.route('/')
+@app.route(WEB_PATH)
 def main():
     return render_template('index.html', metabase_url=METABASE_URL, web_path=WEB_PATH)
 
-@app.route('/api/1/cards')
+@app.route(WEB_PATH+'api/1/cards')
 def api_1_cards():
     return jsonify([c.as_json() for c in Card.query.all()])
 
-@app.route('/api/1/card/<int:id>')
+@app.route(WEB_PATH+'api/1/card/<int:id>')
 def api_1_card(id):
     return jsonify(Card.query.get(id).as_json())
 
-@app.route('/api/1/card/<int:id>', methods=['POST'])
+@app.route(WEB_PATH+'api/1/card/<int:id>', methods=['POST'])
 def api_1_card_create(id):
     mb_card = mb().get_card(id)
     if mb_card.database_id != METABASE_DATABASE_ID:
@@ -71,7 +71,7 @@ def api_1_card_create(id):
 
     return jsonify(db_card.as_json())
 
-@app.route('/api/1/card/<int:id>', methods=['DELETE'])
+@app.route(WEB_PATH+'api/1/card/<int:id>', methods=['DELETE'])
 def api_1_card_destroy(id):
     db_card = Card.query.get(id)
     mb_card = mb().get_card(id)
@@ -83,7 +83,7 @@ def api_1_card_destroy(id):
     db.session.commit()
     return jsonify({}) # TODO proper status
 
-@app.route('/api/1/card/<int:id>/refresh', methods=['POST'])
+@app.route(WEB_PATH+'api/1/card/<int:id>/refresh', methods=['POST'])
 def api_1_card_refresh(id):
     mb_card = mb().get_card(id)
     db_card = Card.query.get(id)

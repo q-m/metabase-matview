@@ -25,7 +25,7 @@ install dependencies using the package manager, so do that when possible (assumi
 Debian/Ubuntu here):
 
 ```sh
-apt install python3 python3-pip python3-requests
+apt install python3 python3-pip python3-requests python3-psycopg2
 ```
 
 Some packages may not have up-to-date versions in the system repositories, install
@@ -59,12 +59,12 @@ After=network.target
 
 [Service]
 Type=notify
-User=wsgi
-Group=wsgi
+User=gunicorn
+Group=gunicorn
 RuntimeDirectory=gunicorn
 WorkingDirectory=/home/gunicorn/metabase-matview
 EnvironmentFile=/etc/default/gunicorn
-ExecStart=/usr/bin/gunicorn -w 2 server:app
+ExecStart=/usr/bin/gunicorn3 -D -w 2 server:app
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed
 TimeoutStopSec=5
@@ -93,9 +93,17 @@ WantedBy=sockets.target
 Finally create a file with configuration variables in `/etc/default/gunicorn`:
 
 ```sh
+WEB_PATH=/matview/
 METABASE_URL=https://metabase.example.com/
 METABASE_DATABASE_ID=1
 DATABASE_URL=postgres://user:pass@host/db
+```
+
+Fix permissions (it contains secrets):
+
+```sh
+chown root:gunicorn /etc/default/gunicorn
+chmod 0640 /etc/default/gunicorn
 ```
 
 Then start it:
