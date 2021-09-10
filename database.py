@@ -52,6 +52,8 @@ class Card(db.Model):
 def init_db(app):
     db.app = app
     db.init_app(app)
+    db.session.execute('CREATE SCHEMA IF NOT EXISTS %s' % schema)
+    db.session.commit()
     db.create_all()
     return db
 
