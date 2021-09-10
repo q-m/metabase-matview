@@ -25,7 +25,7 @@ install dependencies using the package manager, so do that when possible (assumi
 Debian/Ubuntu here):
 
 ```sh
-apt install python3 python3-requests
+apt install python3 python3-pip python3-requests
 ```
 
 Some packages may not have up-to-date versions in the system repositories, install
