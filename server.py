@@ -42,20 +42,27 @@ def mb():
 
     raise Exception("Missing Metabase session/login info.")
 
+def check_session():
+    """Raises an exception when there is no valid Metabase session"""
+    mb().check_session()
+
 @app.route(WEB_PATH)
 def main():
     return render_template('index.html', metabase_url=METABASE_URL, web_path=WEB_PATH)
 
 @app.route(WEB_PATH+'api/1/cards')
 def api_1_cards():
+    check_session()
     return jsonify([c.as_json() for c in Card.query.all()])
 
 @app.route(WEB_PATH+'api/1/card/<int:id>')
 def api_1_card(id):
+    check_session()
     return jsonify(Card.query.get(id).as_json())
 
 @app.route(WEB_PATH+'api/1/card/<int:id>', methods=['POST'])
 def api_1_card_create(id):
+    check_session()
     mb_card = mb().get_card(id)
     if mb_card.database_id != METABASE_DATABASE_ID:
         raise Exception("Can only work with questions using database %d" % METABASE_DATABASE_ID)
@@ -73,6 +80,7 @@ def api_1_card_create(id):
 
 @app.route(WEB_PATH+'api/1/card/<int:id>', methods=['DELETE'])
 def api_1_card_destroy(id):
+    check_session()
     db_card = Card.query.get(id)
     mb_card = mb().get_card(id)
 
@@ -85,6 +93,7 @@ def api_1_card_destroy(id):
 
 @app.route(WEB_PATH+'api/1/card/<int:id>/refresh', methods=['POST'])
 def api_1_card_refresh(id):
+    check_session()
     mb_card = mb().get_card(id)
     db_card = Card.query.get(id)
 
