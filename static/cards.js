@@ -1,9 +1,11 @@
 import html from 'html';
 import { useEffect } from 'preact/hooks';
 
-const Cards = ({ cards, setCards, updateCard, removeCard, api, metabaseUrl }) => {
+const Cards = ({ dbId, cards, setCards, updateCard, removeCard, api, metabaseUrl }) => {
+  dbId = parseInt(dbId); // against URL hacks
+
   useEffect(() => {
-    fetch(`${api}1/cards`)
+    fetch(`${api}1/database/${dbId}/cards`)
       .then(res => res.json())
       .then(data => setCards(data));
   }, []);

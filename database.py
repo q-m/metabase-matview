@@ -2,10 +2,9 @@ import os
 from datetime import datetime, timezone
 from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
+from config import SCHEMA
 
-schema = os.getenv('METABASE_MATVIEW_SCHEMA', 'metabase_matview')
-
-db = SQLAlchemy(metadata=MetaData(schema=schema))
+db = SQLAlchemy(metadata=MetaData(schema=SCHEMA))
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,10 +48,12 @@ class Card(db.Model):
         db.session.execute('REFRESH MATERIALIZED VIEW %s' % self.view_name)
         self.view_refreshed_at = datetime.now(timezone.utc)
 
-def init_db(app):
+def init_db(app, database_url):
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
-    db.session.execute('CREATE SCHEMA IF NOT EXISTS %s' % schema)
+    db.session.execute('CREATE SCHEMA IF NOT EXISTS %s' % SCHEMA)
     db.session.commit()
     db.create_all()
     return db

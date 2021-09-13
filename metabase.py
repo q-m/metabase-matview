@@ -64,6 +64,10 @@ class Metabase:
         res = self.get('/api/card/%d' % id)
         return MetabaseCard(self, res)
 
+    def get_databases(self):
+        res = self.get('/api/database')
+        return [MetabaseDatabase(self, db) for db in res['data']]
+
     def _headers(self):
         return {
             'X-Metabase-Session': self.session_id,
@@ -143,3 +147,23 @@ class MetabaseCard:
         else:
             raise Exception('Only native queries supported')
 
+class MetabaseDatabase:
+    def __init__(self, metabase, data):
+        self.metabase = metabase
+        self.data = data
+
+    @property
+    def id(self):
+        return self.data['id']
+
+    @property
+    def name(self):
+        return self.data['name']
+
+    @property
+    def engine(self):
+        return self.data['engine']
+
+    @property
+    def features(self):
+        return self.data['features']

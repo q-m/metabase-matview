@@ -94,9 +94,13 @@ Finally create a file with configuration variables in `/etc/default/gunicorn`:
 
 ```sh
 WEB_PATH=/matview/
+# Adapt METABASE_URL to your own situation.
 METABASE_URL=https://metabase.example.com/
-METABASE_DATABASE_ID=1
-DATABASE_URL=postgres://user:pass@host/db
+
+# For each database in Metabase, add a DATABASE_URL_x here, where x is the
+# database id in Metabase (hover over the database name in databases admin).
+DATABASE_URL_1=postgres://user:pass@host/db
+DATABASE_URL_2=postgres://user:pass@host/db
 ```
 
 Fix permissions (it contains secrets):
@@ -145,7 +149,6 @@ Don't forget to _Refresh_ when you need updated data.
 
 - Only native SQL queries are supported.
 - Questions with filters or references to other questions don't work.
-- Currently only one database is supported.
 - Need to refresh manually.
 
 ## License
