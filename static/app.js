@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import Router from 'preact-router';
+import Match from 'preact-router/match';
 import { createHashHistory } from 'history';
 import html from 'html';
 import DbDropdown from './dbdropdown.js';
@@ -26,7 +27,14 @@ const App = ({ metabaseUrl, webPath }) => {
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <div className="navbar-nav me-auto mb-2 mb-lg-0">
-              <${DbDropdown} className="nav-item" ...${{ dbs, setDbs, api }} />
+              <${Match} path="/database/:dbId">
+                ${({ path, matches }) => (
+                  html`<${DbDropdown}
+                    className="nav-item"
+                    selectedDbId=${matches ? parseInt(path.split('/').at(-1)) : null}
+                    ...${{ dbs, setDbs, api }} />`
+                )}
+              </${Match}>
               <div className="nav-item">
                 <a className="nav-link btn btn-default" href="/new">Add question</a>
               </div>

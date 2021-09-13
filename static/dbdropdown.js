@@ -1,17 +1,19 @@
 import html from 'html';
 import { useEffect } from 'preact/hooks';
 
-const DbDropdown = ({ api, dbs, setDbs, className }) => {
+const DbDropdown = ({ api, dbs, setDbs, selectedDbId, className }) => {
   useEffect(() => {
     fetch(`${api}1/databases`)
       .then(res => res.json())
       .then(data => setDbs(data));
   }, []);
 
+  const selectedDb = (dbs || []).find(db => db.id === selectedDbId);
+
   return html`
     <div className=${`dropdown ${className}`}>
       <a class="nav-link dropdown-toggle" href="#" id="dbDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Database
+        ${selectedDb ? selectedDb.name : html`<em>Select database...</em>`}
       </a>
       <ul className="dropdown-menu" aria-labelledby="dbDropdown">
         ${(dbs || []).map(db => (
