@@ -70,7 +70,7 @@ def api_1_card(db_id, card_id):
     db = get_db(db_id)
     return jsonify(Card.query.get(card_id).as_json())
 
-@app.route(WEB_PATH+'api/card/<int:card_id>', methods=['POST'])
+@app.route(WEB_PATH+'api/1/card/<int:card_id>', methods=['POST'])
 def api_1_card_create(card_id):
     check_session()
     mb_card = mb().get_card(card_id)
