@@ -145,11 +145,13 @@ Then visit https://metabase.example.com/matview (with the proper domain name you
 Click _Add question_ and enter a question ID to materialize.
 Don't forget to _Refresh_ when you need updated data.
 
-## Limitations
+## Current limitations
 
 - Only native SQL queries are supported.
 - Questions with filters don't work.
-- Questions referencing other questions work, but there are issues when both are materialized.
+- Materializing a question that references another questions works, but you can't refresh a
+  materialized question that another materialized question depends on.
+- When an error occurs, you'll notice the action hasn't been done, but no message is shown.
 - Need to refresh manually.
 
 ## License
