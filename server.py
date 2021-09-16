@@ -88,8 +88,8 @@ def api_1_card_create(card_id):
     db_card = Card(id=card_id, name=mb_card.name)
 
     db.session.add(db_card)
-    db_card.create_view(mb_card.get_native_query())
     mb_card.unmaterialize()  # in case the query was materialized but not in the database
+    db_card.create_view(mb_card.get_native_query())
     mb_card.materialize()
     mb_card.save()
     db.session.commit()
