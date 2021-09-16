@@ -49,7 +49,8 @@ git clone https://github.com/q-m/metabase-matview.git /home/gunicorn/metabase-ma
 
 Then create a systemd service to have it running always, as [described here](https://docs.gunicorn.org/en/stable/deploy.html#systemd).
 
-Create `/etc/systemd/system/gunicorn.service`:
+Create `/etc/systemd/system/gunicorn.service` (note that we assume 19.x here, which
+is currently on Debian - see the link above if you have a later version):
 
 ```systemd
 [Unit]
@@ -58,16 +59,15 @@ Requires=gunicorn.socket
 After=network.target
 
 [Service]
-Type=notify
+PIDFile=/run/gunicorn/gunicorn.pid
 User=gunicorn
 Group=gunicorn
 RuntimeDirectory=gunicorn
 WorkingDirectory=/home/gunicorn/metabase-matview
 EnvironmentFile=/etc/default/gunicorn
-ExecStart=/usr/bin/gunicorn3 -D -w 2 server:app
+ExecStart=/usr/bin/gunicorn3 -p /run/gunicorn/gunicorn.pid -t 300 -w 3 server:app
 ExecReload=/bin/kill -s HUP $MAINPID
-KillMode=mixed
-TimeoutStopSec=5
+ExecStop=/bin/kill -s TERM $MAINPID
 PrivateTmp=true
 
 [Install]
