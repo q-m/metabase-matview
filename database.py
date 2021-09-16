@@ -25,6 +25,7 @@ class Card(db.Model):
         return {
             'id': self.id,
             'name': self.name,
+            'database_id': db.external_database_id,
             'starred': self.starred,
             'created_at': self.created_at,
             'card_refreshed_at': self.card_refreshed_at,
@@ -48,10 +49,11 @@ class Card(db.Model):
         db.session.execute('REFRESH MATERIALIZED VIEW %s' % self.view_name)
         self.view_refreshed_at = datetime.now(timezone.utc)
 
-def init_db(app, database_url):
+def init_db(app, database_id, database_url):
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
+    db.external_database_id = database_id
     db.init_app(app)
     db.session.execute('CREATE SCHEMA IF NOT EXISTS %s' % SCHEMA)
     db.session.commit()

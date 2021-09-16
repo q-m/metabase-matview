@@ -148,7 +148,8 @@ Don't forget to _Refresh_ when you need updated data.
 ## Limitations
 
 - Only native SQL queries are supported.
-- Questions with filters or references to other questions don't work.
+- Questions with filters don't work.
+- Questions referencing other questions work, but there are issues when both are materialized.
 - Need to refresh manually.
 
 ## License

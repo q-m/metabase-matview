@@ -23,8 +23,8 @@ function onSubmit(e, addCard, api) {
   const id = parseInt(document.getElementById('new_card_id').value);
   fetch(`${api}1/card/${id}`, { method: 'POST' })
     .then(res => res.json())
-    .then(data => addCard(data))
-    .then(() => route('/'))
+    .then(data => { addCard(data); return data; })
+    .then(data => route(`/database/${data.database_id}`))
     .finally(data => submit.classList.remove('disabled'));
 }
 

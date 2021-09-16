@@ -8,6 +8,7 @@ import Cards from './cards.js';
 import CardNew from './cardnew.js';
 
 const App = ({ metabaseUrl, webPath }) => {
+  // TODO useReducer instead of useState
   let [cards, setCards] = useState(null);
   const addCard = (card) => setCards((cards || []).concat([card]));
   const updateCard = (id, card) => setCards(cards.map(c => c.id == id ? { ...c, ...card } : c));
