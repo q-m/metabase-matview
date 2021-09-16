@@ -8,7 +8,7 @@ const Cards = ({ dbId, cards, setCards, updateCard, removeCard, api, metabaseUrl
     fetch(`${api}1/database/${dbId}/cards`)
       .then(res => res.json())
       .then(data => setCards(data));
-  }, []);
+  }, [dbId]);
 
   if (cards && cards.length > 0) {
     return html`
