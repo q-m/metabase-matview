@@ -99,8 +99,8 @@ METABASE_URL=https://metabase.example.com/
 
 # For each database in Metabase, add a DATABASE_URL_x here, where x is the
 # database id in Metabase (hover over the database name in databases admin).
-DATABASE_URL_1=postgres://user:pass@host/db
-DATABASE_URL_2=postgres://user:pass@host/db
+DATABASE_URL_1=postgresql://user:pass@host/db
+DATABASE_URL_2=postgresql://user:pass@host/db
 ```
 
 Fix permissions (it contains secrets):
